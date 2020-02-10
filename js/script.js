@@ -4,20 +4,12 @@ FSJS project 2 - List Filter and Pagination
 ******************************************/
 
 /*** 
-   Add your global variables that store the DOM elements you will 
-   need to reference and/or manipulate. 
-   
-   But be mindful of which variables should be global and which 
-   should be locally scoped to one of the two main functions you're 
-   going to create. A good general rule of thumb is if the variable 
-   will only be used inside of a function, then it can be locally 
-   scoped to that function.
-
 Started by creating mainDiv to attach page numbers to later.
 Also queried the student list(works for 44, 54, and 64 student lists)
 Set initial page number to 1, but that will change as buttons are pushed.
 Also set to 10 students per page.  I also ran it at perPage at 15, and that worked accurately as well.
-
+Set initial searchStudents array at a blank array.
+Created pageHeader, where the Search items will be appended to.
 ***/
 const mainDiv = document.querySelector('.page');
 const studentList = document.querySelectorAll('ul li');
@@ -25,19 +17,77 @@ const studentList = document.querySelectorAll('ul li');
 var pageNum = 1;
 var perPage = 10;
 
+let searchStudents = [];
+const pageHeader = document.querySelector('.page-header');
 
+//Create Search bar and Search button
+const searchDiv = document.createElement('div');
+const searchBox = document.createElement('input');
+const searchButton = document.createElement('button');
+pageHeader.appendChild(searchDiv);
+searchDiv.appendChild(searchBox);
+searchDiv.appendChild(searchButton);
+
+//Define Search Bar
+searchDiv.className = 'student-search';
+searchButton.textContent = 'Search';
+searchBox.placeholder = 'Search within students...';
+
+//If no results...
+const noResultsDiv = document.createElement('div');
+const noResultsMessage = document.createElement('h3');
+noResultsMessage.textContent = 'Sorry, no one by that name.';
+noResultsDiv.appendChild(noResultsMessage);
+noResultsMessage.style.display = 'none';
+
+//Function to remove page links
+function removePageLinks() {
+   document.getElementsByClassName('pagination')[0].innerHTML = ' ';
+   mainDiv.firstChild.removeChild(document.querySelector('pagination'));
+}
+
+//Create search function
+function searchList(studentList) {
+   for (let i = 0; i < studentList.length; i += 1) {
+      const student = list[i];
+      const name = student.firstElementChild.children[1];
+      if(searchBox.length !== 0 && name.textContent.toLowerCase().includes(searchfield.value.toLowerCAse())) {
+         searchStudents.push(student);
+      } else {
+         student.style.display = 'none';
+      }
+   }
+   if (searchResults.length === 0) {
+      messageDiv.style.display = 'block';
+   } else {
+      messageDiv.style.display = 'none';
+   }
+   appendPageLinks(searchStudents);
+   searchStudents = [];
+}
+
+//create click and keyup event listeners, then remove old page links, and run appendPageLinks to add new ones and show the list
+searchDiv.addEventListener('click', (e) => {
+   removePageLinks();
+   searchList(studentList);
+})
+
+searchDiv.addEventListener('keyup', () => {
+   removePageLinks();
+   searchList(studentList);
+})
 
 
 /*** 
    Create the `showPage` function.  Iterates through all listed students, shows the correct ones, and hides the rest.
-   Currently using studentList for my list, but as I add the search parameters, I can pass any list into it.
+   List could either be studentList for full list, or searchStudents when searching
 ***/
-function showPage(studentList) {
+function showPage(list) {
    const firstShown = (pageNum * perPage) - perPage;
    const lastShown = (pageNum * perPage);
    
-   for (let i = 0; i < studentList.length; i += 1) {
-      let li = studentList[i];
+   for (let i = 0; i < list.length; i += 1) {
+      let li = list[i];
       if (i < lastShown && i >= firstShown) {
          li.style.display = '';
       } else {
@@ -55,8 +105,8 @@ function showPage(studentList) {
 // ***/
 
 
-function appendPageLinks() {
-   const numPages = Math.ceil(studentList.length / perPage);
+function appendPageLinks(list) {
+   const numPages = Math.ceil(list.length / perPage);
    const div = document.createElement('div');
    const ul = document.createElement('ul');
    ul.className = 'pagination';
@@ -75,11 +125,11 @@ function appendPageLinks() {
    }
    mainDiv.appendChild(div);
    ul.firstElementChild.firstElementChild.className = 'active';
-   showPage(studentList);
+   showPage(list);
 }
 
 //run appendPageLinks function, to generate initial page.
-appendPageLinks();
+appendPageLinks(studentList);
 
 /*
 Create event listener for the links.
