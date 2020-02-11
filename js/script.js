@@ -39,41 +39,43 @@ const noResultsMessage = document.createElement('h3');
 noResultsMessage.textContent = 'Sorry, no one by that name.';
 noResultsDiv.appendChild(noResultsMessage);
 noResultsMessage.style.display = 'none';
+mainDiv.appendChild(noResultsDiv);
 
-//Function to remove page links
-function removePageLinks() {
-   document.getElementsByClassName('pagination')[0].innerHTML = ' ';
-   mainDiv.firstChild.removeChild(document.querySelector('pagination'));
-}
+//Function to remove page links    Work in progress...
+// function removePageLinks() {
+//    document.getElementsByClassName('pagination')[0].innerHTML = ' ';
+//    mainDiv.firstChild.removeChild(document.querySelector('pagination'));
+// }
 
 //Create search function
-function searchList(studentList) {
-   for (let i = 0; i < studentList.length; i += 1) {
-      const student = list[i];
-      const name = student.firstElementChild.children[1];
-      if(searchBox.length !== 0 && name.textContent.toLowerCase().includes(searchfield.value.toLowerCAse())) {
-         searchStudents.push(student);
+function searchList(list) {
+   for (let i = 0; i < list.length; i += 1) {
+      const li = list[i];
+      const name = li.firstElementChild.nth-Child[1];
+      if(searchBox.textContent.length !== 0 && name.textContent.toLowerCase().includes(searchBox.textContent.toLowerCase())) {
+         searchStudents.push(li);
       } else {
-         student.style.display = 'none';
+         li.style.display = 'none';
       }
    }
-   if (searchResults.length === 0) {
-      messageDiv.style.display = 'block';
+   console.log(searchStudents);
+   if (searchStudents.length === 0) {
+      noResultsDiv.style.display = '';
    } else {
-      messageDiv.style.display = 'none';
+      noResultsDiv.style.display = 'none';
    }
    appendPageLinks(searchStudents);
    searchStudents = [];
 }
 
 //create click and keyup event listeners, then remove old page links, and run appendPageLinks to add new ones and show the list
-searchDiv.addEventListener('click', (e) => {
-   removePageLinks();
+searchButton.addEventListener('click', (e) => {
+   // removePageLinks();
    searchList(studentList);
 })
 
-searchDiv.addEventListener('keyup', () => {
-   removePageLinks();
+searchBox.addEventListener('keyup', () => {
+   // removePageLinks();
    searchList(studentList);
 })
 
