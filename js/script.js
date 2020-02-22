@@ -20,6 +20,7 @@ var count = 0;
 const pageHeader = document.querySelector('.page-header');
 let searchStudents = [];
 
+
 //Create Search bar and Search button
 const searchDiv = document.createElement('div');
 const searchBox = document.createElement('input');
@@ -58,9 +59,17 @@ function searchList(list) {
       const li = list[i];
       li.style.display = 'none';
    }
-   //check searchStudents length.  If empty, display no results message.  If not, show list.
+   //check searchStudents length.  If search box is empty, display original list.
+   //If searchStudents is empty, display no results message.  If not, show list.
    let removePag = document.querySelector('.pagination');
-   if (searchStudents.length === 0) {
+   if (searchStudents.length === 0 && searchBox.value.length === 0) {
+      noResultsMessage.style.display = 'none';
+      noResultsDiv.style.display = 'none';
+      removePag.style.display = '';
+      count = 0;
+      showPage(studentList);
+      appendPageLinks(studentList);
+   } else if (searchStudents.length === 0) {
       noResultsMessage.style.display = '';
       noResultsDiv.style.display = '';
       removePag.style.display = 'none';
@@ -97,7 +106,6 @@ searchBox.addEventListener('keyup', (e) => {
 function showPage(list) {
    const firstShown = (pageNum * perPage) - perPage;
    const lastShown = (pageNum * perPage);
-   
    for (let i = 0; i < list.length; i += 1) {
       let li = list[i];
       if (i < lastShown && i >= firstShown) {
@@ -114,7 +122,8 @@ function showPage(list) {
    If only one page is needed, I took the page numbers off the screen.
    Appended a to li, li to ul, ul to div, and eventually, div to mainDiv.
    Set first page link to 'active', which will change with the event listner which I created next.
-// ***/
+   Added event listener to buttons using function defined below.
+***/
 
 
 function appendPageLinks(list) {
@@ -143,32 +152,34 @@ function appendPageLinks(list) {
       ul.firstElementChild.firstElementChild.className = 'active';
    }
    mainDiv.appendChild(div);
+   clickPageLinks();
 }
 
-//run appendPageLinks function, to generate initial page.
+//run appendPageLinks and showPage functions, to generate initial page.
 appendPageLinks(studentList);
 showPage(studentList);
 
 /*
-Create event listener for the links.
+Create event listener function for the links.
 Loop through, and set it on each page number link.
 Set the new target to active, and took active status off previous page.
 Set pageNum to the new page number, and then ran showPage function, to show new page and correct list.
 */
-const clicked = document.querySelectorAll('a');
-for (i = 0; i < clicked.length; i++) {
-   clicked[i].addEventListener('click', event => {
-      const newPage = event.target;
-      const activeLink = document.querySelector('.active');
-      pageNum = newPage.textContent;
-      console.log(pageNum);
-      activeLink.className = '';
-      newPage.className = 'active';
-      showPage(studentList);
-      if (count = 0) {
-         showPage(studentList);
-      } else {
-         showPage(searchStudents);
-      };
-   });
+function clickPageLinks() {
+   const clicked = document.querySelectorAll('a');
+   for (i = 0; i < clicked.length; i++) {
+      clicked[i].addEventListener('click', event => {
+         const newPage = event.target;
+         const activeLink = document.querySelector('.active');
+         pageNum = newPage.textContent;
+         console.log(pageNum);
+         activeLink.className = '';
+         newPage.className = 'active';
+         if (count = 0) {
+            showPage(studentList);
+         } else {
+            showPage(searchStudents);
+         };
+      });
+   };
 };
