@@ -20,7 +20,6 @@ var count = 0;
 const pageHeader = document.querySelector('.page-header');
 let searchStudents = [];
 
-
 //Create Search bar and Search button
 const searchDiv = document.createElement('div');
 const searchBox = document.createElement('input');
@@ -53,7 +52,7 @@ function searchList(list) {
          searchStudents.push(li);
       }
    }
-   console.log(searchStudents.length);
+
    //clear previous list
    for (i = 0; i < studentList.length; i += 1) {
       const li = list[i];
@@ -88,15 +87,11 @@ function searchList(list) {
 searchButton.addEventListener('click', (e) => {
    pageNum = 1;
    searchList(studentList);
-   appendPageLinks(searchStudents);
-   showPage(searchStudents);
 })
 
 searchBox.addEventListener('keyup', (e) => {
    pageNum = 1;
    searchList(studentList);
-   appendPageLinks(searchStudents);
-   showPage(searchStudents);
 })
 
 /*** 
@@ -156,9 +151,9 @@ function appendPageLinks(list) {
 }
 
 //run appendPageLinks and showPage functions, to generate initial page.
+
 appendPageLinks(studentList);
 showPage(studentList);
-
 /*
 Create event listener function for the links.
 Loop through, and set it on each page number link.
@@ -172,10 +167,9 @@ function clickPageLinks() {
          const newPage = event.target;
          const activeLink = document.querySelector('.active');
          pageNum = newPage.textContent;
-         console.log(pageNum);
          activeLink.className = '';
          newPage.className = 'active';
-         if (count = 0) {
+         if (count === 0) {
             showPage(studentList);
          } else {
             showPage(searchStudents);
